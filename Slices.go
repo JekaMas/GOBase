@@ -146,7 +146,7 @@ func task10(s *[]int, i int) {
 	*s = append((*s)[i:], (*s)[:i]...)
 }
 
-//Тоже, но сдвиг на заданное пользователем i
+//Сдвиг на 1 вправо
 func task11(s *[]int) {
 	if len(*s) > 0 {
 		*s = append([]int{(*s)[len(*s)-1]}, (*s)[:len(*s)-1]...)
