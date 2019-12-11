@@ -53,7 +53,7 @@ func main() {
 	fmt.Println(s2)
 
 	fmt.Println("12")
-	task12(&s2, 0)
+	task12(&s2, 2)
 	fmt.Println(s2)
 
 	fmt.Println("13")
@@ -61,12 +61,12 @@ func main() {
 	fmt.Println(s3)
 
 	fmt.Println("14")
-	task14(&s3)
+	task14(s3)
 	fmt.Println(s3)
 
 	fmt.Println("15")
-	task15(&s3)
-	s4 := []string{ "ZAR", "AZs", "ABC", "AVC", "SAR" }
+	task15(s3)
+	s4 := []string{"ZAR", "AZs", "ABC", "AVC", "SAR"}
 	sort.Strings(s4)
 	fmt.Println(s4)
 }
@@ -146,7 +146,7 @@ func task10(s *[]int, i int) {
 	*s = append((*s)[i:], (*s)[:i]...)
 }
 
-//Тоже, но сдвиг на заданное пользователем i
+//Сдвиг на 1 вправо
 func task11(s *[]int) {
 	if len(*s) > 0 {
 		*s = append([]int{(*s)[len(*s)-1]}, (*s)[:len(*s)-1]...)
@@ -165,22 +165,21 @@ func task13(s []int) (this []int) {
 }
 
 //В слайсе поменять все четные с ближайшими нечетными индексами. 0 и 1, 2 и 3, 4 и 5...
-func task14(s *[]int) {
-	for i := 0; i < len(*s)-1; i += 2 {
+func task14(s []int) {
+	for i := 0; i < len(s)-1; i += 2 {
 
 		// swap без 3й переменной для числовых типов
-		(*s)[i] ^= (*s)[i+1]
-		(*s)[i+1] ^= (*s)[i]
-		(*s)[i] ^= (*s)[i+1]
+		s[i] ^= s[i+1]
+		s[i+1] ^= s[i]
+		s[i] ^= s[i+1]
 	}
 }
 
 //Упорядочить слайс в порядке: прямом, обратном, лексикографическом.
-func task15(s *[]int) {
-	sort.Ints(*s)
-	fmt.Println(*s)
+func task15(s []int) {
+	sort.Ints(s)
+	fmt.Println(s)
 
-	sort.Slice(*s, func(i, j int) bool { return (*s)[i] > (*s)[j] })
-	fmt.Println(*s)
+	sort.Slice(s, func(i, j int) bool { return s[i] > s[j] })
+	fmt.Println(s)
 }
-
