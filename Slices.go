@@ -111,8 +111,7 @@ func task06(s *[]int, i int) (num int) {
 	}
 
 	num = (*s)[i]
-	tempArr := (*s)[i+1:]
-	*s = append((*s)[:i], tempArr...)
+	*s = append((*s)[:i], (*s)[i+1:]...)
 	return
 }
 
@@ -126,8 +125,9 @@ func task08(s1 *[]int, s2 []int) {
 	sort.Ints(s2)
 
 	for i := 0; i < len(*s1); i++ {
-		if s2[sort.SearchInts(s2, (*s1)[i])] == (*s1)[i] {
-			task06(s1, i)
+		if k := sort.SearchInts(s2, (*s1)[i]); k < len(s2) && s2[k] == (*s1)[i] {
+			(*s1)[i] = (*s1)[len(*s1)-1]
+			*s1 = (*s1)[:len(*s1)-1]
 			i--
 		}
 	}
@@ -168,10 +168,7 @@ func task13(s []int) (this []int) {
 func task14(s []int) {
 	for i := 0; i < len(s)-1; i += 2 {
 
-		// swap без 3й переменной для числовых типов
-		s[i] ^= s[i+1]
-		s[i+1] ^= s[i]
-		s[i] ^= s[i+1]
+		s[i], s[i+1] = s[i+1], s[i]
 	}
 }
 
@@ -180,6 +177,6 @@ func task15(s []int) {
 	sort.Ints(s)
 	fmt.Println(s)
 
-	sort.Slice(s, func(i, j int) bool { return s[i] > s[j] })
+	sort.Sort(sort.Reverse(sort.IntSlice(s)))
 	fmt.Println(s)
 }
