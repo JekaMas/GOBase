@@ -5,7 +5,9 @@ import (
 	"sort"
 )
 
-func main() {
+// jekamas: неудобно иметь больше одного main в одном пакете
+func runSliceTasks() {
+	// jekamas: каждый раз мы меняем этот слайс и передаем дальше. из-за этого трудно понять верен ли каждый отдельный шаг. лучше бы создавать новый слайс перед каждой функцией.
 	s := []int{1, 2, 3, 4, 5, 6}
 
 	fmt.Println("01")
@@ -40,20 +42,25 @@ func main() {
 	task08(&s, s2)
 	fmt.Println(s)
 
+	// jekamas: разберись почему для заданий с 9 по 12 не нужно передавать *[]int, а достаточно []int
+	s2 = []int{1, 2, 3, 4}
 	fmt.Println("09")
-	task09(&s)
-	fmt.Println(s)
+	task09(s2)
+	fmt.Println(s2)
 
 	fmt.Println("10")
-	task10(&s2, 2)
+	s2 = []int{1, 2, 3, 4}
+	task10(s2, 2)
 	fmt.Println(s2)
 
 	fmt.Println("11")
-	task11(&s2)
+	s2 = []int{1, 2, 3, 4}
+	task11(s2)
 	fmt.Println(s2)
 
 	fmt.Println("12")
-	task12(&s2, 2)
+	s2 = []int{1, 2, 3, 4}
+	task12(s2, 2)
 	fmt.Println(s2)
 
 	fmt.Println("13")
@@ -91,15 +98,14 @@ func task03(s *[]int) {
 
 //Взять последнее число слайса, вернуть его пользователю, а из слайса этот элемент удалить
 func task04(s *[]int) (num int) {
-	num = (*s)[len(*s)-1]
-	*s = (*s)[:len(*s)-1]
+	num, *s = (*s)[len(*s)-1], (*s)[:len(*s)-1]
 	return
 }
 
 //Взять первое число слайса, вернуть его пользователю, а из слайса этот элемент удалить
 func task05(s *[]int) (num int) {
-	num = (*s)[0]
-	*s = (*s)[1:]
+	// если уж проверяешь везьде длину слайса, то и здесь это надо сделать.
+	num, *s = (*s)[0], (*s)[1:]
 	return
 }
 
@@ -134,32 +140,40 @@ func task08(s1 *[]int, s2 []int) {
 }
 
 //Сдвинуть все элементы слайса на 1 влево. Нулевой становится последним, первый - нулевым, последний - предпоследним.
-func task09(s *[]int) {
-	if len(*s) > 0 {
-		*s = append((*s)[1:], (*s)[0])
-	}
+func task09(s []int) {
+	// jekamas: переиспользуй свой же код.
+	task10(s, 1)
 }
 
 //Тоже, но сдвиг на заданное пользователем i
-func task10(s *[]int, i int) {
-	i %= len(*s)
-	*s = append((*s)[i:], (*s)[:i]...)
+func task10(s []int, offset int) {
+	offset %= len(s)
+	if len(s) == 0 || offset == 0 {
+		return
+	}
+
+	leftSide := append([]int{}, s[:offset]...)
+	rightSide := s[offset:]
+
+	copy(s, rightSide)
+	copy(s[len(rightSide):], leftSide)
 }
 
 //Сдвиг на 1 вправо
-func task11(s *[]int) {
-	if len(*s) > 0 {
-		*s = append([]int{(*s)[len(*s)-1]}, (*s)[:len(*s)-1]...)
-	}
+func task11(s []int) {
+	task10(s, len(s)-1) // task12(s, 1)
 }
 
 //Тоже, но сдвиг на i вправо
-func task12(s *[]int, i int) {
-	i %= len(*s)
-	*s = append((*s)[len(*s)-i:], (*s)[:len(*s)-i]...)
+func task12(s []int, i int) {
+	i %= len(s)
+	// jekamas: сдвиг вправо это тот же сдвиг влево, но len(s)-i - посмотри про алгебру часов или модульная арифметика, в курсе Общей алгебры - https://ru.wikipedia.org/wiki/%D0%A1%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D0%BF%D0%BE_%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D1%8E
+	i = len(s)-i
+	task10(s, i)
 }
 
-//Вернуть пользователю копию переданного слайса(тут вопрос: копия такая, чтобы значения не пересекались в памяти?)
+//Вернуть пользователю копию переданного слайса
+// jekamas: всё верно
 func task13(s []int) (this []int) {
 	return append(this, s...)
 }
@@ -167,7 +181,6 @@ func task13(s []int) (this []int) {
 //В слайсе поменять все четные с ближайшими нечетными индексами. 0 и 1, 2 и 3, 4 и 5...
 func task14(s []int) {
 	for i := 0; i < len(s)-1; i += 2 {
-
 		s[i], s[i+1] = s[i+1], s[i]
 	}
 }
